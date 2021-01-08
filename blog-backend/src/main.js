@@ -1,8 +1,9 @@
 require('dotenv').config();
-const Koa = require('koa');
-const Router = require('koa-router');
-const bodyParser = require('koa-bodyparser');
-const mongoose = require('mongoose');
+import Koa from 'koa';
+import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
+import mongoose from 'mongoose';
+//import createFakeData from './createFakeData';
 
 const api = require('./api');
 
@@ -14,6 +15,7 @@ mongoose
 .connect(MONGO_URI, { useNewUrlParser : true, useFindAndModify: false})
 .then(()=>{
   console.log('Connected to MongoDB');
+  //createFakeData(); //fakedata만들기
 }).catch(e => {
   console.error(e)
 })

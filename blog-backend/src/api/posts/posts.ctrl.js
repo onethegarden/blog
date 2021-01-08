@@ -56,10 +56,34 @@ export const write = async ctx => {
  GET /api/posts
 */
 export const list = async (ctx) => {
+  //query는 문자열, 숫자로 변환해주어야함
+  //1 기본값
+  const page = parseInt(ctx.query.page || '1', 10);
+
+  if(page<1){
+    ctx.status = 400;
+    return;
+  }
+
   try {
     //find() 함수를 호출 한 뒤에는 exec()를 붙여주어야 서버에 쿼리 요청 가능
-    const posts = await Post.find().exec();
-    ctx.body = posts;
+    const posts = await Post.find()
+      .sort({ _id : -1 }) //내림차순 정렬
+      .limit(10)//개수 제한
+      .skip((page - 1) * 10) //ex skip(10): 10개를 제외하고 불러옴
+      .lean()// JSON으로 조회, 200자 줄이기 위해 처음부터 JSON으로 조회
+      .exec();
+    //post개수
+    const postCount = await Post.countDocuments().exec();
+    //response Header중 Link 설정, 커스텀 헤더 설정!
+    //postman으로 확인 가능
+    ctx.set('Last-page', Math.ceil(postCount / 10));
+    ctx.body = posts
+    .map(post =>({
+      ...post,
+      body:
+        post.body.length <200 ? post.body : `${post.body.slice(0, 200)}...`,
+    }));
   } catch (e) {
     ctx.throw(500, e);
   }
