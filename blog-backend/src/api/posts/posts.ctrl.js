@@ -5,11 +5,22 @@ import Joi from 'joi';
 //object 검증
 const { ObjectId } = mongoose.Types;
 
-export const checkObjectId = (ctx, next) => {
+export const getPostById = async (ctx, next) => {
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
     ctx.status = 400; //Bad Request
     return;
+  }
+  try{
+    const post = await Post.findById(id);
+    if(!post){
+      ctx.status = 404;//Not Fount
+      return;
+    }
+    ctx.state.post = post;
+    return next();
+  } catch (e){
+    ctx.throw(500, e);
   }
   return next();
 };
@@ -42,6 +53,7 @@ export const write = async ctx => {
     title,
     body,
     tags,
+    user: ctx.state.user,
   });
 
   try {
@@ -93,17 +105,7 @@ export const list = async (ctx) => {
  GET /api/posts/:id
 */
 export const read = async (ctx) => {
-  const { id } = ctx.params;
-  try {
-    const post = await Post.findById(id).exec();
-    if (!post) {
-      ctx.status = 404;
-      return;
-    }
-    ctx.body = post;
-  } catch (e) {
-    ctx.throw(500, e);
-  }
+  ctx.body = ctx.state.post;
 };
 
 /*
@@ -112,6 +114,8 @@ export const read = async (ctx) => {
 export const remove = async (ctx) => {
   const { id } = ctx.params;
   try {
+    console.log(id)
+    console.log('dddd')
     const post = await Post.findByIdAndRemove(id).exec();
     ctx.status = 204; //No Content (성공, 응답할 데이터x);
   } catch (e) {
@@ -157,3 +161,13 @@ export const update = async (ctx) => {
     ctx.throw(500, e);
   }
 };
+
+//id로 찾은 포스트가 로그인 중인 사용자가 작성한 포스트인지 확인
+export const checkOwnPost = (ctx, next) => {
+  const {user, post} = ctx.state;
+  if(post.user._id.toString()!== user._id){
+    ctx.status = 403;
+    return;
+  }
+  return next();
+}

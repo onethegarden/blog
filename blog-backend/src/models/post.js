@@ -1,6 +1,4 @@
-import mongoose from 'mongoose';
-
-const { Schema } = mongoose;
+import mongoose, { Schema } from 'mongoose';
 
 const PostSchema = new Schema({
     title: String,
@@ -9,7 +7,11 @@ const PostSchema = new Schema({
     publishedDate:{
         type: Date,
         default: Date.now, //현재 날짜를 기본으로
-    }
+    },
+    user:{//mongoDB에서는 필요한 데이터를 전부 집어 넣음
+        _id: mongoose.Types.ObjectId,
+        username: String,
+    },
 })
 
 const Post = mongoose.model('Post', PostSchema); //모델 인스턴스 만들기
