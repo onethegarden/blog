@@ -93,7 +93,7 @@ const query = {
       .lean()// JSON으로 조회, 200자 줄이기 위해 처음부터 JSON으로 조회
       .exec();
     //post개수
-    const postCount = await Post.countDocuments().exec();
+    const postCount = await Post.countDocuments(query).exec();
     //response Header중 Link 설정, 커스텀 헤더 설정!
     //postman으로 확인 가능
     ctx.set('Last-page', Math.ceil(postCount / 10));
