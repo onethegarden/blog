@@ -5,7 +5,7 @@ import AuthTemplateBlock from '../components/auth/AuthTemplate';
 const RegisterPage = () => {
   return (
     <AuthTemplateBlock>
-      <AuthForm />
+      <AuthForm type="register"/>
     </AuthTemplateBlock>
   );
 };
