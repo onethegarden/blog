@@ -13,7 +13,6 @@ const [CHECK, CHECK_SUCCESS, CHECK_FAILURE] = createRequestActionTypes(
 
 export const tempSetUser = createAction(TEMP_SET_USER, (user) => user);
 export const check = createAction(CHECK);
-console.log(check);
 
 const checkSaga = createRequestSaga(CHECK, authAPI.check);
 export function* userSaga() {
