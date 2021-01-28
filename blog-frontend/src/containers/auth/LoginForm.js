@@ -39,7 +39,7 @@ const LoginForm = ({ history }) => {
     if (authError) {
       console.log('오류방지');
       console.log(authError);
-      setError('로그인실패');
+      setError('로그인 실패');
       return;
     }
     if (auth) {
