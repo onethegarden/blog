@@ -68,11 +68,15 @@ const RegisterForm = ({ history }) => {
   //user값이 잘 성정되었는지 확인
   useEffect(() => {
     if (user) {
-      console.log('check API성공');
-      console.log(user);
-      history.push('/'); //홈 화면으로 이동
+      history.push('/');
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {
+        console.log('localStorage is not working');
+      }
     }
   }, [history, user]);
+
 
   return (
     <AuthForm

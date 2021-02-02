@@ -31,7 +31,7 @@ const LoginForm = ({ history }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     const { username, password } = form;
-    dispatch(login({username, password}));
+    dispatch(login({ username, password }));
   };
 
   //컴포넌트가 처음 렌더링 될 때 폼을 초기화
@@ -49,11 +49,16 @@ const LoginForm = ({ history }) => {
     dispatch(initializeForm('login'));
   }, [auth, authError, dispatch]);
 
-  useEffect(()=> {
-    if (user){
+  useEffect(() => {
+    if (user) {
       history.push('/');
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {
+        console.log('localStorage is not working');
+      }
     }
-  }, [history, user])
+  }, [history, user]);
 
   return (
     <AuthForm
